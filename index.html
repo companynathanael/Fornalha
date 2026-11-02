@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fornalha</title>
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Ícones (sprite) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1 3 4 5 4 9a4 4 0 01-8 0c0-2 1-3 1-3 0 1.5 1 2.5 2 2.5 0-3-1-5.5 1-8.5z"/><path d="M6 14a6 6 0 0012 0"/></symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="8" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/></symbol>
+      <symbol id="i-merge" viewBox="0 0 24 24"><path d="M5 4v4a4 4 0 004 4h3M19 4v4a4 4 0 01-4 4h-3M12 12v8M9 17l3 3 3-3"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+      <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 18a9 9 0 1116 0"/><path d="M12 14l4-5"/><circle cx="12" cy="14" r="1.5"/></symbol>
+      <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+      <symbol id="i-xc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+      <symbol id="i-oc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></symbol>
+      <symbol id="i-load" viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+      <symbol id="i-anchor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><path d="M12 7v14M5 13a7 7 0 0014 0M8 11h8"/></symbol>
+      <symbol id="i-wind" viewBox="0 0 24 24"><path d="M3 9h11a3 3 0 10-3-3M3 15h15a3 3 0 11-3 3M3 12h8"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+      <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol>
+      <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- ============ TELA DE CARREGAMENTO ============ -->
+  <div class="splash" id="splash" aria-live="polite">
+    <div class="splash-glow"></div>
+    <div class="splash-heat"></div>
+    <div class="splash-embers" id="splash-embers"></div>
+    <div class="splash-orb">
+      <svg class="splash-rings" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="67" class="ring-base"/>
+        <circle cx="70" cy="70" r="67" class="ring-or"/>
+        <circle cx="70" cy="70" r="54" class="ring-inner"/>
+        <circle cx="70" cy="70" r="54" class="ring-white"/>
+      </svg>
+      <img src="assets/fornalha-symbol-orange.png" alt="" class="splash-symbol" />
+    </div>
+    <div class="splash-logo" id="splash-logo">
+      <img src="assets/fornalha-symbol-256.png" alt="" />
+      <span class="wordmark">fornalha</span>
+    </div>
+    <div class="splash-status mono" id="splash-status">acendendo a fornalha</div>
+    <div class="splash-bar"><i id="splash-bar"></i></div>
+  </div>
+
+  <div class="app">
+    <!-- ============ TOPO ============ -->
+    <header class="topbar glass">
+      <div class="brand">
+        <img class="brand-symbol" src="assets/fornalha-symbol-256.png" alt="" />
+        <span class="wordmark top">fornalha</span>
+        <span class="brand-sep"></span>
+        <span class="brand-sub">Motor de transformação<br/>Nathanael Industries</span>
+      </div>
+
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-view="painel"><svg class="ic"><use href="#i-grid"/></svg>Painel geral</button>
+        <button class="tab" data-view="fundicao"><svg class="ic"><use href="#i-merge"/></svg>Fundição</button>
+        <button class="tab" data-view="prova"><svg class="ic"><use href="#i-flame"/></svg>Prova de fogo <span class="badge" id="prova-badge">0</span></button>
+        <button class="tab" data-view="desempenho"><svg class="ic"><use href="#i-gauge"/></svg>Desempenho</button>
+        <button class="tab" data-view="submotores"><svg class="ic"><use href="#i-layers"/></svg>Submotores</button>
+      </nav>
+
+      <div class="top-right">
+        <div class="stats">
+          <div class="stat"><b id="st-fornadas">0</b><span>fornadas</span></div>
+          <div class="stat"><b id="st-hab">0</b><span>habilidades</span></div>
+          <div class="stat"><b id="st-aprov">0%</b><span>aprovação</span></div>
+        </div>
+        <button class="live-pill" id="conn-pill" title="Modo demonstração (dados simulados)"><span class="dot pulse"></span><span id="live-text">demonstração · forno aceso</span><span class="mono" id="clock">--:--:--</span></button>
+        <button class="icon-btn" id="btn-export" title="Exportar relatório (JSON)"><svg class="ic"><use href="#i-download"/></svg></button>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- ============ PAINEL GERAL ============ -->
+      <section class="view active" id="view-painel">
+        <div class="page">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Painel geral</div>
+              <h1>A Fornalha hoje</h1>
+              <p class="muted">Numa fornalha, o metal derrete, se funde e é provado no fogo. Aqui as APIs do Gather viram habilidades prontas.</p>
+            </div>
+            <button class="btn primary" data-go="fundicao"><svg class="ic sm"><use href="#i-flame"/></svg>Nova fornada</button>
+          </div>
+
+          <div class="kpis" id="painel-kpis"></div>
+
+          <div class="card glass">
+            <div class="card-title">Linha de produção <span class="tag dim">motores</span></div>
+            <div class="pipeline">
+              <div class="pipe-step gather"><div class="mark cyan">G</div><div><b>Gather</b><span>entrega as APIs</span></div></div>
+              <div class="pipe-arrow"><svg class="ic"><use href="#i-arrow"/></svg></div>
+              <div class="pipe-step me"><div class="avatar logo"><img src="assets/fornalha-symbol-orange.png" alt="" /></div><div><b>Fornalha</b><span>funde e prova no fogo</span></div></div>
+              <div class="pipe-arrow"><svg class="ic"><use href="#i-arrow"/></svg></div>
+              <div class="pipe-step bezalel"><div class="mark green">B</div><div><b>Bezalel</b><span>molda a IA</span></div></div>
+              <div class="pipe-arrow"><svg class="ic"><use href="#i-arrow"/></svg></div>
+              <div class="pipe-step"><div class="mark"><svg class="ic sm"><use href="#i-check"/></svg></div><div><b>IA pronta</b><span>liberada para uso</span></div></div>
+            </div>
+            <div class="pipe-base"><span class="mark sm asafe">A</span><span>O <b>Asafe</b> sustenta tudo: servidores, dados, energia e permissões.</span></div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card glass">
+              <div class="card-title">Fornadas em andamento <span class="tag live"><span class="dot pulse"></span>ao vivo</span></div>
+              <div id="fornadas"></div>
+            </div>
+            <div class="stack">
+              <div class="card glass">
+                <div class="card-title">Alertas <span class="tag" id="alertas-n">0</span></div>
+                <div id="alertas"></div>
+              </div>
+              <div class="card glass">
+                <div class="card-title">O que a Fornalha não faz</div>
+                <div class="limites">
+                  <div><span class="mark sm asafe">A</span>Energia e infraestrutura → <b>Asafe</b></div>
+                  <div><span class="mark sm green">B</span>Criar IAs → <b>Bezalel</b></div>
+                  <div><span class="mark sm cyan">G</span>Criar APIs → <b>Gather</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card glass">
+            <div class="card-title">Últimas habilidades fundidas <button class="btn ghost sm" data-go="fundicao">Ver fundição</button></div>
+            <div class="table-wrap"><table class="table" id="ultimas"></table></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ FUNDIÇÃO ============ -->
+      <section class="view" id="view-fundicao">
+        <div class="page">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Fundição de habilidades</div>
+              <h1>Fundir APIs em uma habilidade</h1>
+              <p class="muted">Escolha as APIs do Gather que entram no cadinho. A Fornalha funde tudo em uma habilidade pronta e manda para a prova de fogo.</p>
+            </div>
+          </div>
+
+          <div class="fund">
+            <div class="card glass">
+              <div class="card-title">APIs do Gather <span class="tag cyan" id="sel-n">0 no cadinho</span></div>
+              <div class="api-list" id="api-list"></div>
+            </div>
+
+            <div class="stack">
+              <div class="card glass">
+                <div class="card-title">Cadinho <span class="mono muted" style="letter-spacing:0;text-transform:none;font-weight:500" id="cadinho-temp">frio · 0 °C</span></div>
+                <div class="cadinho" id="cadinho">
+                  <svg class="fios" id="fios"></svg>
+                  <div class="entradas" id="entradas"></div>
+                  <div class="forno" id="forno"><img src="assets/fornalha-symbol-orange.png" alt="" /><div class="forno-label" id="forno-label">aguardando metal</div></div>
+                  <div class="saida" id="saida"></div>
+                </div>
+                <div class="fund-form">
+                  <label class="field"><span>Nome da habilidade</span><input id="h-nome" placeholder="ex.: Acompanhar ação" /></label>
+                  <label class="field"><span>Para qual IA</span>
+                    <select id="h-ia"><option>Miquéias</option><option>Horácio</option><option>Uso geral</option></select>
+                  </label>
+                  <button class="btn primary" id="btn-fundir"><svg class="ic sm"><use href="#i-flame"/></svg>Fundir</button>
+                </div>
+                <div class="hint">Exemplo: <b>Cotação + Gráfico + Alerta → "Acompanhar ação"</b>. <a href="#" id="exemplo" style="color:var(--or-2)">Carregar exemplo</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card glass">
+            <div class="card-title">Habilidades fundidas <span class="mono muted" style="letter-spacing:0;text-transform:none" id="hab-count"></span></div>
+            <div class="table-wrap"><table class="table" id="habilidades"></table></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PROVA DE FOGO ============ -->
+      <section class="view" id="view-prova">
+        <div class="page">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Prova de fogo</div>
+              <h1>Testes sob pressão</h1>
+              <p class="muted">Cada habilidade e cada IA nova passa por situações difíceis, erros e sobrecarga antes de ser liberada.</p>
+            </div>
+            <div class="seg-group inline" id="prova-filtro">
+              <button class="seg active" data-f="todos">Tudo</button>
+              <button class="seg" data-f="habilidade">Habilidades</button>
+              <button class="seg" data-f="ia">IAs novas</button>
+            </div>
+          </div>
+          <div class="kpis" id="prova-kpis"></div>
+          <div class="kanban k3">
+            <div class="col glass em-prova"><div class="col-head"><span class="dot pulse"></span>Em prova<span class="count" id="n-em">0</span></div><div class="stack" id="k-em" style="gap:10px"></div></div>
+            <div class="col glass"><div class="col-head"><span class="dot white"></span>Aprovado<span class="count" id="n-ok">0</span></div><div class="stack" id="k-ok" style="gap:10px"></div></div>
+            <div class="col glass reprovado"><div class="col-head"><span class="dot fail"></span>Reprovado<span class="count" id="n-fail">0</span></div><div class="stack" id="k-fail" style="gap:10px"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ DESEMPENHO ============ -->
+      <section class="view" id="view-desempenho">
+        <div class="page">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Desempenho</div>
+              <h1>Velocidade, eficiência e consumo</h1>
+              <p class="muted">Tudo que sai da Fornalha é medido. O que for lento ou desperdiçar recursos é reprovado.</p>
+            </div>
+            <div class="seg-group inline" id="perf-filtro">
+              <button class="seg active" data-f="todos">Tudo</button>
+              <button class="seg" data-f="aprovada">Aprovados</button>
+              <button class="seg" data-f="reprovada">Reprovados</button>
+            </div>
+          </div>
+          <div class="kpis" id="perf-kpis"></div>
+          <div class="grid-2" id="destaques"></div>
+          <div class="card glass">
+            <div class="card-title">Medições <span class="mono muted" style="letter-spacing:0;text-transform:none">limites: velocidade p95 ≤ 1200 ms · eficiência ≥ 70% · consumo ≤ 8 chamadas por uso</span></div>
+            <div class="table-wrap"><table class="table" id="perf"></table></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SUBMOTORES ============ -->
+      <section class="view" id="view-submotores">
+        <div class="page">
+          <div class="page-head">
+            <div>
+              <div class="eyebrow">Submotores · em breve</div>
+              <h1>Sustentação da Fornalha</h1>
+              <p class="muted">Os submotores não tiram funções da Fornalha: sustentam a diferença entre uma IA básica e um motor. Ainda não produzidos.</p>
+            </div>
+            <span class="tag dim">3 de 12 submotores</span>
+          </div>
+          <div class="grid-3" id="subs"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toasts" id="toasts"></div>
+
+  <!-- janela (modal) -->
+  <div class="modal-bg" id="modal" aria-hidden="true">
+    <div class="modal glass-strong" role="dialog" aria-modal="true" id="modal-box"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
