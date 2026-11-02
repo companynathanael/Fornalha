@@ -86,9 +86,9 @@
         <div class="stats">
           <div class="stat"><b id="st-fornadas">0</b><span>fornadas</span></div>
           <div class="stat"><b id="st-hab">0</b><span>habilidades</span></div>
-          <div class="stat"><b id="st-aprov">0%</b><span>aprovação</span></div>
+          <div class="stat"><b id="st-aprov">—</b><span>aprovação</span></div>
         </div>
-        <button class="live-pill" id="conn-pill" title="Modo demonstração (dados simulados)"><span class="dot pulse"></span><span id="live-text">demonstração · forno aceso</span><span class="mono" id="clock">--:--:--</span></button>
+        <button class="live-pill off" id="conn-pill" title="Conexão com o Asafe"><span class="dot"></span><span id="live-text">sem conexão · Asafe</span><span class="mono" id="clock">--:--:--</span></button>
         <button class="icon-btn" id="btn-export" title="Exportar relatório (JSON)"><svg class="ic"><use href="#i-download"/></svg></button>
       </div>
     </header>
@@ -124,7 +124,7 @@
 
           <div class="grid-2">
             <div class="card glass">
-              <div class="card-title">Fornadas em andamento <span class="tag live"><span class="dot pulse"></span>ao vivo</span></div>
+              <div class="card-title">Fornadas em andamento <span class="tag dim">aguardando Asafe</span></div>
               <div id="fornadas"></div>
             </div>
             <div class="stack">
@@ -183,7 +183,7 @@
                   </label>
                   <button class="btn primary" id="btn-fundir"><svg class="ic sm"><use href="#i-flame"/></svg>Fundir</button>
                 </div>
-                <div class="hint">Exemplo: <b>Cotação + Gráfico + Alerta → "Acompanhar ação"</b>. <a href="#" id="exemplo" style="color:var(--or-2)">Carregar exemplo</a></div>
+                <div class="hint">Exemplo: <b>Cotação + Gráfico + Alerta → "Acompanhar ação"</b>.</div>
               </div>
             </div>
           </div>

@@ -4,8 +4,8 @@
 
 > Numa fornalha, o metal derrete, se funde e é provado no fogo.
 
-**Estado atual:** apenas a **aparência** (site/painel estático com dados de demonstração).
-Nada aqui funciona de verdade ainda; o back-end será construído depois.
+**Estado atual:** apenas a **aparência**, **zerada** (sem dados). Os dados vão chegar quando a Fornalha for conectada ao **Asafe**, junto com os outros motores.
+As APIs vêm do Gather pelo Asafe; o back-end será construído depois.
 
 Linha de produção: **Gather** (APIs) → **Fornalha** (funde e prova) → **Bezalel** (molda a IA) → IA pronta. O **Asafe** sustenta tudo.
 
@@ -35,5 +35,5 @@ Depois abra http://localhost:8080 (ou abra `index.html` direto no navegador).
 
 - `index.html` — estrutura (mesmo padrão do Asafe: tela de carregamento, topo, abas, páginas, janela, avisos)
 - `styles.css` — tema preto & laranja (base do Asafe com as cores trocadas + componentes da Fornalha)
-- `app.js` — tela de carregamento, abas e simulações (fundição, provas andando sozinhas, fornadas esquentando)
+- `app.js` — tela de carregamento, abas e telas vazias prontas para receber os dados do Asafe
 - `assets/` — logo da Fornalha (símbolo branco, símbolo laranja, favicon e o original `fornalha-logo-original.jpg`)

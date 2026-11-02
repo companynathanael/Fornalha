@@ -1,5 +1,5 @@
 /* =========================================================
-   FORNALHA · Motor de transformação — apenas aparência (dados simulados)
+   FORNALHA · Motor de transformação — aparência zerada (aguardando conexão com o Asafe)
    ========================================================= */
 (() => {
   "use strict";
@@ -13,73 +13,18 @@
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  /* ---------------- dados de demonstração ---------------- */
-  const APIS = [
-    { id: "cotacao", nome: "Cotação", rota: "GET /b3/cotacao" },
-    { id: "grafico", nome: "Gráfico", rota: "GET /b3/candles" },
-    { id: "alerta", nome: "Alerta", rota: "POST /alertas/push" },
-    { id: "noticias", nome: "Notícias", rota: "GET /noticias/financas" },
-    { id: "calculo", nome: "Cálculo", rota: "POST /mat/calcular" },
-    { id: "agenda", nome: "Agenda", rota: "GET /agenda/eventos" },
-    { id: "clima", nome: "Clima", rota: "GET /clima/previsao" },
-    { id: "voz", nome: "Voz", rota: "POST /voz/falar" },
-    { id: "email", nome: "E-mail", rota: "POST /email/enviar" },
-    { id: "ocr", nome: "Leitura de documentos", rota: "POST /ocr/ler" },
-    { id: "traducao", nome: "Tradução", rota: "POST /traduzir" },
-    { id: "transcricao", nome: "Transcrição", rota: "POST /voz/transcrever" },
-  ];
+  /* ---------------- estado (zerado até conectar ao Asafe) ---------------- */
+  const APIS = []; // chegam do Gather, pelo Asafe, quando conectado
   const apiNome = (id) => APIS.find((a) => a.id === id)?.nome ?? id;
 
   const state = {
     selecionadas: new Set(),
     fundindo: false,
-    habilidades: [
-      { nome: "Acompanhar ação", ia: "Miquéias", receita: ["cotacao", "grafico", "alerta"], status: "aprovada", quando: 42 },
-      { nome: "Resumo da manhã", ia: "Horácio", receita: ["agenda", "clima", "noticias", "voz"], status: "aprovada", quando: 95 },
-      { nome: "Calcular posição", ia: "Miquéias", receita: ["cotacao", "calculo"], status: "aprovada", quando: 160 },
-      { nome: "Avisar compromisso", ia: "Horácio", receita: ["agenda", "alerta"], status: "aprovada", quando: 240 },
-      { nome: "Tradução simultânea", ia: "Horácio", receita: ["transcricao", "traducao", "voz"], status: "reprovada", quando: 300 },
-      { nome: "Varredura de notícias", ia: "Miquéias", receita: ["noticias", "cotacao", "alerta"], status: "reprovada", quando: 380 },
-      { nome: "Ler e responder documento", ia: "Horácio", receita: ["ocr", "traducao", "email"], status: "em prova", quando: 12 },
-    ],
-    fornadas: [
-      { id: 31, nome: "Ler e responder documento", ia: "Horácio", etapa: 2, pct: 58 },
-      { id: 32, nome: "Carteira diária", ia: "Miquéias", etapa: 1, pct: 34 },
-      { id: 33, nome: "Lembrete por voz", ia: "Horácio", etapa: 0, pct: 12 },
-    ],
-    provas: [
-      { nome: "Ler e responder documento", tipo: "habilidade", alvo: "Horácio", status: "em prova",
-        testes: [["Situações difíceis", "ok", "PDF torto, 3 idiomas"], ["Erros", "run", "OCR fora do ar"], ["Sobrecarga", "wait", "200 docs/min"]] },
-      { nome: "Horácio HoV 1.1", tipo: "ia", alvo: "protótipo do Bezalel", status: "em prova",
-        testes: [["Situações difíceis", "run", "pedidos ambíguos"], ["Erros", "wait", "API sem resposta"], ["Sobrecarga", "wait", "50 conversas juntas"]] },
-      { nome: "Acompanhar ação", tipo: "habilidade", alvo: "Miquéias", status: "aprovado", motivo: "Passou nas 3 provas. p95 de 640 ms com 500 req/s.",
-        testes: [["Situações difíceis", "ok", "pregão fechado"], ["Erros", "ok", "cotação atrasada"], ["Sobrecarga", "ok", "500 req/s"]] },
-      { nome: "Resumo da manhã", tipo: "habilidade", alvo: "Horácio", status: "aprovado", motivo: "Passou nas 3 provas. Troca de API de clima sem perder o resumo.",
-        testes: [["Situações difíceis", "ok", "agenda vazia"], ["Erros", "ok", "clima fora do ar"], ["Sobrecarga", "ok", "100 req/s"]] },
-      { nome: "Calcular posição", tipo: "habilidade", alvo: "Miquéias", status: "aprovado", motivo: "Passou nas 3 provas. Resultados conferidos com 1.000 casos.",
-        testes: [["Situações difíceis", "ok", "ativos fracionados"], ["Erros", "ok", "valor faltando"], ["Sobrecarga", "ok", "300 req/s"]] },
-      { nome: "Tradução simultânea", tipo: "habilidade", alvo: "Horácio", status: "reprovado", motivo: "Lenta demais: p95 de 2.840 ms (limite 1.200 ms) sob sobrecarga.",
-        testes: [["Situações difíceis", "ok", "sotaques"], ["Erros", "ok", "áudio cortado"], ["Sobrecarga", "fail", "2.840 ms"]] },
-      { nome: "Varredura de notícias", tipo: "habilidade", alvo: "Miquéias", status: "reprovado", motivo: "Desperdício: 14 chamadas por uso, 9 repetidas. Limite é 8.",
-        testes: [["Situações difíceis", "ok", "notícia duplicada"], ["Erros", "fail", "loop de repetição"], ["Sobrecarga", "ok", "80 req/s"]] },
-      { nome: "Miquéias JpG 1.0", tipo: "ia", alvo: "protótipo do Bezalel", status: "reprovado", motivo: "Errou 3 de 40 cálculos com dados incompletos. Volta para o Bezalel.",
-        testes: [["Situações difíceis", "fail", "dados incompletos"], ["Erros", "ok", "API sem resposta"], ["Sobrecarga", "ok", "50 tarefas juntas"]] },
-    ],
-    perf: [
-      { nome: "Acompanhar ação", tipo: "Habilidade", p95: 640, efic: 91, cham: 3, mem: 48, status: "aprovada" },
-      { nome: "Resumo da manhã", tipo: "Habilidade", p95: 980, efic: 84, cham: 4, mem: 62, status: "aprovada" },
-      { nome: "Calcular posição", tipo: "Habilidade", p95: 210, efic: 96, cham: 2, mem: 21, status: "aprovada" },
-      { nome: "Avisar compromisso", tipo: "Habilidade", p95: 330, efic: 93, cham: 2, mem: 18, status: "aprovada" },
-      { nome: "Tradução simultânea", tipo: "Habilidade", p95: 2840, efic: 71, cham: 3, mem: 140, status: "reprovada", motivo: "lentidão" },
-      { nome: "Varredura de notícias", tipo: "Habilidade", p95: 1110, efic: 38, cham: 14, mem: 96, status: "reprovada", motivo: "desperdício" },
-      { nome: "Miquéias JpG 1.0", tipo: "IA nova", p95: 1180, efic: 66, cham: 7, mem: 310, status: "reprovada", motivo: "eficiência" },
-    ],
-    alertas: [
-      { tipo: "fail", msg: "<b>Tradução simultânea</b> reprovada por lentidão (2.840 ms)", min: 4 },
-      { tipo: "fail", msg: "<b>Miquéias JpG 1.0</b> reprovado na prova de situações difíceis", min: 18 },
-      { tipo: "warn", msg: "API <b>Leitura de documentos</b> do Gather instável na prova de erros", min: 26 },
-      { tipo: "warn", msg: "<b>Varredura de notícias</b> gasta 14 chamadas por uso", min: 51 },
-    ],
+    habilidades: [],
+    fornadas: [],
+    provas: [],
+    perf: [],
+    alertas: [],
   };
   const LIM = { p95: 1200, efic: 70, cham: 8 };
   const ETAPAS = ["Derretendo", "Fundindo", "Prova de fogo", "Resfriando"];
@@ -125,10 +70,11 @@
     const fim = state.provas.filter((p) => p.status !== "em prova");
     return fim.length ? Math.round((fim.filter((p) => p.status === "aprovado").length / fim.length) * 100) : 0;
   }
+  const taxaTxt = () => (state.provas.some((p) => p.status !== "em prova") ? taxaAprovacao() + "%" : "—");
   function updateStats() {
     $("#st-fornadas").textContent = state.fornadas.length;
     $("#st-hab").textContent = state.habilidades.filter((h) => h.status === "aprovada").length;
-    $("#st-aprov").textContent = taxaAprovacao() + "%";
+    $("#st-aprov").textContent = taxaTxt();
     const em = state.provas.filter((p) => p.status === "em prova").length;
     $("#prova-badge").textContent = em;
     $("#prova-badge").classList.toggle("hidden", !em);
@@ -168,8 +114,8 @@
 
   $("#conn-pill").addEventListener("click", () => abrirModal(`
     <div class="modal-head"><div class="avatar logo lg"><img src="assets/fornalha-symbol-orange.png" alt=""/></div>
-      <div><b>Modo demonstração</b><span>Esta é só a aparência da Fornalha. Os dados são simulados; a API real ainda será construída.</span></div></div>
-    <div class="hint">Quando a Fornalha tiver back-end, aqui ficará a conexão com a API (mesmo padrão do Asafe: endereço + token).</div>
+      <div><b>Sem conexão</b><span>A Fornalha está zerada. Os dados vão chegar quando ela for conectada ao Asafe, junto com os outros motores.</span></div></div>
+    <div class="hint">Aqui ficará a conexão com o Asafe (mesmo padrão do painel do Asafe: endereço da API + token). As APIs vêm do Gather pelo Asafe.</div>
     <div class="modal-acoes"><button class="btn primary" data-fechar>Entendi</button></div>`));
 
   $("#btn-export").addEventListener("click", () => {
@@ -196,10 +142,10 @@
   function renderPainel() {
     const aprov = state.habilidades.filter((h) => h.status === "aprovada").length;
     $("#painel-kpis").innerHTML =
-      kpi("Fornadas em andamento", state.fornadas.length, "no fogo", [2, 3, 2, 4, 3, 3, state.fornadas.length]) +
-      kpi("Habilidades fundidas", aprov, "+2 hoje", [1, 1, 2, 2, 3, 4, aprov]) +
-      kpi("Taxa de aprovação", taxaAprovacao() + "%", "nas provas", [50, 55, 62, 58, 60, 66, taxaAprovacao()]) +
-      kpi("Alertas", state.alertas.length, "abertos", [1, 2, 1, 3, 2, 4, state.alertas.length]);
+      kpi("Fornadas em andamento", state.fornadas.length, "no fogo") +
+      kpi("Habilidades fundidas", aprov, "prontas") +
+      kpi("Taxa de aprovação", taxaTxt(), "nas provas") +
+      kpi("Alertas", state.alertas.length, "abertos");
 
     $("#fornadas").innerHTML = state.fornadas.length ? state.fornadas.map((f) => {
       const temp = 600 + f.etapa * 250 + Math.round(f.pct * 2.5);
@@ -212,16 +158,19 @@
         <div class="bar heat"><i style="width:${f.pct}%"></i></div>
         <div class="etapas">${ETAPAS.map((e, i) => `<span class="${i < f.etapa ? "feito" : i === f.etapa ? "agora" : ""}">${e}</span>`).join("")}</div>
       </div>`;
-    }).join("") : `<div class="empty">Nenhuma fornada no fogo agora.</div>`;
+    }).join("") : `<div class="empty">Nenhuma fornada no fogo · ${VAZIO}</div>`;
 
     $("#alertas-n").textContent = state.alertas.length;
-    $("#alertas").innerHTML = state.alertas.map((a) =>
+    $("#alertas").innerHTML = state.alertas.length ? "" : `<div class="empty">Nenhum alerta</div>`;
+    $("#alertas").innerHTML += state.alertas.map((a) =>
       `<div class="alerta ${a.tipo}">${icon(a.tipo === "fail" ? "xc" : "alert", "sm")}<div class="a-msg">${a.msg}</div><time>${hhmm(a.min)}</time></div>`).join("");
 
     $("#ultimas").innerHTML = `<tr><th>Habilidade</th><th>Receita (APIs do Gather)</th><th>Para</th><th>Status</th><th>Quando</th></tr>` +
-      state.habilidades.slice(0, 5).map((h) => `<tr><td><b>${esc(h.nome)}</b></td><td>${receita(h)}</td><td>${esc(h.ia)}</td><td>${statusTag(h.status)}</td><td class="mono">${hhmm(h.quando)}</td></tr>`).join("");
+      (state.habilidades.length ? state.habilidades.slice(0, 5).map((h) => `<tr><td><b>${esc(h.nome)}</b></td><td>${receita(h)}</td><td>${esc(h.ia)}</td><td>${statusTag(h.status)}</td><td class="mono">${hhmm(h.quando)}</td></tr>`).join("") : linhaVazia(5, "Nenhuma habilidade fundida ainda"));
   }
 
+  const VAZIO = "aguardando conexão com o Asafe";
+  const linhaVazia = (cols, txt) => `<tr><td colspan="${cols}"><div class="empty">${txt}</div></td></tr>`;
   function receita(h) {
     return `<div class="receita">${h.receita.map((r, i) => `${i ? `<span class="op">+</span>` : ""}<span class="chip cyan">${esc(apiNome(r))}</span>`).join("")}<span class="op eq">→</span><span class="chip or">${esc(h.nome)}</span></div>`;
   }
@@ -235,7 +184,8 @@
      FUNDIÇÃO
      ========================================================= */
   function renderApis() {
-    $("#api-list").innerHTML = APIS.map((a) => `
+    $("#api-list").innerHTML = APIS.length ? "" : `<div class="empty">Nenhuma API recebida do Gather<br/>${VAZIO}</div>`;
+    $("#api-list").innerHTML += APIS.map((a) => `
       <button class="api-item ${state.selecionadas.has(a.id) ? "on" : ""}" data-api="${a.id}">
         <span class="box"></span><span class="t"><b>${a.nome}</b><span>${a.rota}</span></span><span class="tag cyan">gather</span>
       </button>`).join("");
@@ -287,14 +237,6 @@
   }
   window.addEventListener("resize", desenharFios);
 
-  $("#exemplo").addEventListener("click", (e) => {
-    e.preventDefault();
-    if (state.fundindo) return;
-    state.selecionadas = new Set(["cotacao", "grafico", "alerta"]);
-    $("#h-nome").value = state.habilidades.some((h) => h.nome === "Acompanhar ação") ? "Acompanhar ação v2" : "Acompanhar ação";
-    $("#h-ia").value = "Miquéias";
-    renderApis();
-  });
 
   $("#btn-fundir").addEventListener("click", async () => {
     if (state.fundindo) return;
@@ -330,7 +272,7 @@
   function renderHabilidades() {
     $("#hab-count").textContent = `${state.habilidades.length} no total`;
     $("#habilidades").innerHTML = `<tr><th>Habilidade</th><th>Receita</th><th>Para</th><th>APIs</th><th>Status</th></tr>` +
-      state.habilidades.map((h) => `<tr><td><b>${esc(h.nome)}</b></td><td>${receita(h)}</td><td>${esc(h.ia)}</td><td class="mono">${h.receita.length}</td><td>${statusTag(h.status)}</td></tr>`).join("");
+      (state.habilidades.length ? state.habilidades.map((h) => `<tr><td><b>${esc(h.nome)}</b></td><td>${receita(h)}</td><td>${esc(h.ia)}</td><td class="mono">${h.receita.length}</td><td>${statusTag(h.status)}</td></tr>`).join("") : linhaVazia(5, "Nenhuma habilidade fundida ainda"));
   }
 
   /* =========================================================
@@ -357,7 +299,7 @@
   function renderProvas() {
     const lista = state.provas.map((p, i) => [p, i]).filter(([p]) => filtroProva === "todos" || p.tipo === filtroProva);
     const col = (s) => lista.filter(([p]) => p.status === s);
-    const fill = (el, n, arr) => { $(el).innerHTML = arr.length ? arr.map(([p, i]) => cardProva(p, i)).join("") : `<div class="empty">Nada aqui</div>`; $(n).textContent = arr.length; };
+    const fill = (el, n, arr) => { $(el).innerHTML = arr.length ? arr.map(([p, i]) => cardProva(p, i)).join("") : `<div class="empty">Vazio</div>`; $(n).textContent = arr.length; };
     fill("#k-em", "#n-em", col("em prova"));
     fill("#k-ok", "#n-ok", col("aprovado"));
     fill("#k-fail", "#n-fail", col("reprovado"));
@@ -366,7 +308,7 @@
       kpi("Em prova", col("em prova").length, "agora") +
       kpi("Aprovados", state.provas.filter((p) => p.status === "aprovado").length, "liberados") +
       kpi("Reprovados", state.provas.filter((p) => p.status === "reprovado").length, "com motivo") +
-      kpi("Taxa de aprovação", taxaAprovacao() + "%", `${fim.length} provas`);
+      kpi("Taxa de aprovação", taxaTxt(), `${fim.length} provas`);
   }
   document.addEventListener("click", (e) => {
     const c = e.target.closest("[data-prova]"); if (!c) return;
@@ -389,42 +331,6 @@
     });
   });
 
-  /* simulação: provas andando sozinhas */
-  setInterval(() => {
-    const p = state.provas.find((x) => x.status === "em prova");
-    if (!p) return;
-    const k = p.testes.findIndex(([, s]) => s === "run" || s === "wait");
-    if (k < 0) return;
-    if (p.testes[k][1] === "wait") { p.testes[k][1] = "run"; renderTudo(); return; }
-    const passou = Math.random() > 0.22;
-    p.testes[k][1] = passou ? "ok" : "fail";
-    if (k + 1 < p.testes.length && passou) p.testes[k + 1][1] = "run";
-    const terminou = !passou || k + 1 === p.testes.length;
-    if (terminou) {
-      p.status = passou ? "aprovado" : "reprovado";
-      p.motivo = passou ? "Passou nas 3 provas sem falhas." : `Falhou em ${p.testes[k][0].toLowerCase()} (${p.testes[k][2]}).`;
-      const h = state.habilidades.find((x) => x.nome === p.nome);
-      if (h) h.status = passou ? "aprovada" : "reprovada";
-      const fi = state.fornadas.findIndex((f) => f.nome === p.nome);
-      if (fi >= 0) state.fornadas.splice(fi, 1);
-      if (!passou) state.alertas.unshift({ tipo: "fail", msg: `<b>${esc(p.nome)}</b> reprovado na prova de fogo`, min: 0 });
-      if (h && passou && !state.perf.some((x) => x.nome === h.nome)) {
-        state.perf.unshift({ nome: h.nome, tipo: "Habilidade", p95: 300 + Math.round(Math.random() * 700), efic: 75 + Math.round(Math.random() * 20), cham: h.receita.length, mem: 20 + Math.round(Math.random() * 60), status: "aprovada" });
-      }
-      toast(`Prova de fogo: <b>${esc(p.nome)}</b> ${passou ? "aprovado" : "reprovado"}`);
-    }
-    renderTudo();
-  }, 4200);
-
-  /* simulação: fornadas esquentando */
-  setInterval(() => {
-    state.fornadas.forEach((f) => {
-      if (f.etapa >= 2) return; // na prova de fogo, quem avança é a prova
-      f.pct = Math.min(f.pct + 2 + Math.round(Math.random() * 3), 99);
-      if (f.pct >= 25 * (f.etapa + 1) + 20 && f.etapa < 1) f.etapa++;
-    });
-    renderPainel(); updateStats();
-  }, 2500);
 
   /* =========================================================
      DESEMPENHO
@@ -443,11 +349,12 @@
 
   function renderPerf() {
     const ok = state.perf.filter((p) => p.status === "aprovada");
-    const media = (arr, k) => Math.round(arr.reduce((s, p) => s + p[k], 0) / (arr.length || 1));
+    const media = (arr, k) => (arr.length ? Math.round(arr.reduce((s, p) => s + p[k], 0) / arr.length) : null);
+    const ou = (v, suf = "") => (v === null ? "—" : v + suf);
     $("#perf-kpis").innerHTML =
-      kpi("Velocidade (p95 média)", media(ok, "p95") + " ms", "aprovados", [820, 760, 700, 690, 640, 610, media(ok, "p95")]) +
-      kpi("Eficiência média", media(ok, "efic") + "%", "aprovados", [80, 82, 85, 84, 88, 90, media(ok, "efic")]) +
-      kpi("Consumo médio", media(ok, "cham"), "chamadas/uso", [5, 5, 4, 4, 3, 3, media(ok, "cham")]) +
+      kpi("Velocidade (p95 média)", ou(media(ok, "p95"), " ms"), "aprovados") +
+      kpi("Eficiência média", ou(media(ok, "efic"), "%"), "aprovados") +
+      kpi("Consumo médio", ou(media(ok, "cham")), "chamadas/uso") +
       kpi("Reprovados", state.perf.filter((p) => p.status === "reprovada").length, "lento ou desperdício");
 
     const rep = state.perf.filter((p) => p.status === "reprovada");
@@ -458,6 +365,7 @@
 
     const lista = state.perf.filter((p) => filtroPerf === "todos" || p.status === filtroPerf);
     $("#perf").innerHTML = `<tr><th>Item</th><th>Velocidade (p95)</th><th>Eficiência</th><th>Consumo</th><th>Memória</th><th>Resultado</th></tr>` +
+      (lista.length ? "" : linhaVazia(6, `Nada medido ainda · ${VAZIO}`)) +
       lista.map((p) => `<tr class="perf-row ${p.status}">
         <td><b>${esc(p.nome)}</b><div class="u-sub">${p.tipo}</div></td>
         <td>${meter(p.p95, 3000, LIM.p95, p.p95.toLocaleString("pt-BR") + " ms", p.p95 > LIM.p95)}</td>
